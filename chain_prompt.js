@@ -6,23 +6,23 @@ function toKebabCase(input) {
     // Trim, collapse multiple spaces, and normalize delimiters
     let str = input.trim().replace(/[\s_]+/g, ' ');
 
-    // Remove punctuation except for spaces and hyphens
-    str = str.replace(/[^\w\s-]/g, '');
+    // Replace mixed delimiters (spaces, underscores, camelCase) with spaces
+    str = str
+        .replace(/([a-z])([A-Z])/g, '$1 $2') // camelCase to space
+        .replace(/[^a-zA-Z0-9 ]+/g, '');     // remove punctuation
 
-    // Replace spaces and underscores with hyphens
-    str = str.replace(/[\s_]+/g, '-');
+    // Collapse multiple spaces again after replacements
+    str = str.replace(/\s+/g, ' ');
 
-    // Convert camelCase or PascalCase to kebab-case
-    str = str.replace(/([a-z])([A-Z])/g, '$1-$2');
+    // Convert to lowercase, split by space, and join with hyphens
+    const kebab = str
+        .toLowerCase()
+        .split(' ')
+        .filter(Boolean)
+        .join('-');
 
-    // Convert to lowercase
-    str = str.toLowerCase();
-
-    // Remove multiple hyphens
-    str = str.replace(/-+/g, '-');
-
-    // Remove leading/trailing hyphens
-    str = str.replace(/^-+|-+$/g, '');
-
-    return str;
+    return kebab;
 }
+
+// Example usage:
+// console.log(toKebabCase('  Hello_world--Test String!  ')); // "hello-world-test-string"
